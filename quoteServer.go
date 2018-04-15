@@ -18,21 +18,15 @@ const (
 	CONNECTION_TYPE  = "tcp"
 )
 
-type Quote struct {
-	Price float64
-	Stock string
-	// UserId    string
-	Timestamp int64
-	CryptoKey string
-}
-
 func getQuoteFromQS(userid string, stock string) (Quote, error) {
 
 	// Mock QuoteServer hit for local testing
 	testMode, _ := strconv.ParseBool(os.Getenv("DEV_ENVIRONMENT"))
+	glog.Info("TestMode: ", testMode)
 	if testMode {
 		r := rand.New(rand.NewSource(getCurrentTs()))
 
+		glog.Info("Returning Mocked QS quote.")
 		return Quote{
 			Price: r.Float64(),
 			Stock: stock,
@@ -44,6 +38,7 @@ func getQuoteFromQS(userid string, stock string) (Quote, error) {
 
 	quote := Quote{}
 
+	glog.Info("Getting quote Server connection....")
 	conn, err := getConnection()
 	if err != nil {
 		return quote, err
